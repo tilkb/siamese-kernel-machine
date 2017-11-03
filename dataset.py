@@ -7,52 +7,51 @@ import random
 import numpy as np
 from torch.utils.data import DataLoader
 
-def get_random_partition(seed = 42):
-    digit_indices=[x for x in range(1623)]
+
+def get_random_partition(seed=42):
+    digit_indices = [x for x in range(1623)]
     random.seed(seed)
     random.shuffle(digit_indices)
-    train=digit_indices[:1150]
-    validate=digit_indices[1150:1200]
-    test=digit_indices[1200:]
+    train = digit_indices[:1150]
+    validate = digit_indices[1150:1200]
+    test = digit_indices[1200:]
     return train, validate, test
+
 
 def get_loaders(args):
     train, validate, test = get_random_partition(args.seed)
-    dset_train=OmniglotPair("data", train)
+    dset_train = OmniglotPair("data", train)
     if args.cuda:
         train_loader = DataLoader(dset_train,
-                          batch_size=args.batch_size,
-                          shuffle=True,
-                          num_workers= 1, 
-                          pin_memory=True)
+                                  batch_size=args.batch_size,
+                                  shuffle=True,
+                                  num_workers=1,
+                                  pin_memory=True)
     else:
         train_loader = DataLoader(dset_train,
-                          batch_size=args.batch_size,
-                          shuffle=True,
-                          num_workers= 4, 
-                          pin_memory=False)
+                                  batch_size=args.batch_size,
+                                  shuffle=True,
+                                  num_workers=4,
+                                  pin_memory=False)
 
-
-
-    dset_validate=OmniglotPair("data", validate)
+    dset_validate = OmniglotPair("data", validate)
     if args.cuda:
         validate_loader = DataLoader(dset_validate,
-                          batch_size=args.test_batch_size,
-                          shuffle=True,
-                          num_workers= 1, 
-                          pin_memory=True)
+                                     batch_size=args.test_batch_size,
+                                     shuffle=True,
+                                     num_workers=1,
+                                     pin_memory=True)
     else:
         validate_loader = DataLoader(dset_validate,
-                          batch_size=args.test_batch_size,
-                          shuffle=True,
-                          num_workers= 4, 
-                          pin_memory=False)
+                                     batch_size=args.test_batch_size,
+                                     shuffle=True,
+                                     num_workers=4,
+                                     pin_memory=False)
 
+    dset_test = Omniglot("data", test)
 
-    dset_test=Omniglot("data", test)
-    
     return train_loader, validate_loader, dset_test
-    
+
 
 class Omniglot(object):
     def __init__(self, path, choosen_classes=None, transform=None):
@@ -80,12 +79,11 @@ class Omniglot(object):
         if self.transform is not None:
             img = self.transform(img)
         img_array = np.array(img)
-        img_array = img_array /255.0
+        img_array = img_array / 255.0
         img_array = img_array.reshape(
-            (1,1, img_array.shape[0], img_array.shape[1]))
+            (1, 1, img_array.shape[0], img_array.shape[1]))
 
         return torch.from_numpy(img_array).float(), label
-
 
     def __len__(self):
         return len(self.data)
@@ -143,7 +141,7 @@ class OmniglotPair(object):
         if self.transform is not None:
             img = self.transform(img)
         img_array = np.array(img)
-        img_array = img_array /255.0
+        img_array = img_array / 255.0
         img_array = img_array.reshape(
             (1, img_array.shape[0], img_array.shape[1]))
         return torch.from_numpy(img_array).float()
