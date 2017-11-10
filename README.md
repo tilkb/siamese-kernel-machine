@@ -3,11 +3,11 @@ This is the official PyTorch implementation of the `Make SVM Great Again with Si
 This implementation contains only Omniglot experiment.
 
 ## Install Prerequisites
-    pip install -r requirements.txt
+    `pip install -r requirements.txt`
 
 ## Run
  
- python train.py 
+    `python train.py` 
 
 Parameters:
 * --batch-size <batch size=256> 
@@ -16,3 +16,8 @@ Parameters:
 * --C <C=0.2> 
 * --test-number <number of test=10>
 * --seed <random seed=42>
+
+## Keras version of the experiment
+Keras 1.2.2 required, this is the original implementation of the paper.
+
+`python train-keras.py`
